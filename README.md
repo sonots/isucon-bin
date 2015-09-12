@@ -31,10 +31,10 @@ show create table の情報をだしておく
 ログを仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/10.nginx.md
 
 ```
-log_format  ltsv  'host:$remote_addr\t'
+  log_format  ltsv  'time:$time_iso8601\t'
+                    'host:$remote_addr\t'
                     'vhost:$http_host\t'
                     'port:$server_port\t'
-                    'time:$time_iso8601\t'
                     'method:$request_method\t'
                     'uri:$request_uri\t'
                     'protocol:$server_protocol\t'
@@ -47,7 +47,7 @@ log_format  ltsv  'host:$remote_addr\t'
                     'apptime:$upstream_response_time\t'
                     'reqtime:$request_time';
 
-  # access_log /var/log/nginx/access.log ltsv;
+  access_log /var/log/nginx/access.log ltsv;
 ```
 
 ## 実行前準備
