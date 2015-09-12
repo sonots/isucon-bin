@@ -46,7 +46,7 @@ show create table の情報をだしておく
                     'forwardedproto:$http_x_forwarded_proto\t'
                     'apptime:$upstream_response_time\t'
                     'reqtime:$request_time';
-
+  
   access_log /var/log/nginx/access.log ltsv;
 ```
 
@@ -76,6 +76,10 @@ sudo /etc/init.d/mysql restart
 ```
 sudo mv /var/log/nginx/access.log /var/log/nginx/access.log.bak
 sudo /etc/init.d/nginx restart
+```
+
+```
+sudo tcpdump -A port 80 -i lo > ~/metrics/$DATE_tcpdump.log
 ```
 
 ```
@@ -111,8 +115,58 @@ mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/metrics/$DATE_mysqldumpslow.l
 ### Nginx
 
 ```
-/var/log/nginx/access.log ~/metrics/$DATE_access.log
+cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
 ~/bin/http_stat.sh /var/log/nginx/access.log | tee ~/metrics/$DATE_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
+
+## 全ヘッダの取得
+
+```
+$ cat ~/metrics/$DATE_tcpdump.log | ~/bin/tcpdump_all_headers.rb
+  log_format  ltsv  'time:$time_iso8601\t'
+                    'host:$remote_addr\t'
+                    'port:$server_port\t'
+                    'method:$request_method\t'
+                    'uri:$request_uri\t'
+                    'protocol:$server_protocol\t'
+                    'status:$status\t'
+                    'size:$body_bytes_sent\t'
+                    'apptime:$upstream_response_time\t'
+                    'reqtime:$request_time\t'
+                    'http_content_length:$http_content_length\t'
+                    'http_referer:$http_referer\t'
+                    'http_user_agent:$http_user_agent\t'
+                    'http_content_type:$http_content_type\t'
+                    'http_x_forwarded_for:$http_x_forwarded_for\t'
+                    'http_host:$http_host\t'
+                    'http_cookie:$http_cookie\t'
+                    'http_accept_encoding:$http_accept_encoding\t'
+                    'sent_http_connection:$sent_http_connection\t'
+                    'sent_http_date:$sent_http_date\t'
+                    'sent_http_content_length:$sent_http_content_length\t'
+                    'sent_http_last_modified:$sent_http_last_modified\t'
+                    'sent_http_x_frame_options:$sent_http_x_frame_options\t'
+                    'sent_http_content_type:$sent_http_content_type\t'
+                    'sent_http_x_xss_protection:$sent_http_x_xss_protection\t'
+                    'sent_http_server:$sent_http_server\t'
+                    'sent_http_location:$sent_http_location\t'
+                    'sent_http_status:$sent_http_status\t'
+                    'sent_http_x_content_type_options:$sent_http_x_content_type_options\t'
+                    'sent_http_set_cookie:$sent_http_set_cookie';
+```
+
+nginx のログを挿げ替えて
+
+```
+sudo mv /var/log/nginx/access.log /var/log/nginx/access.log.bak
+sudo /etc/init.d/nginx restart
+```
+
+再計測して、ログを git push
+
+```
+DATE=$(date +%H%m)
+cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
+```
