@@ -17,13 +17,16 @@ end
 stats.each do |path, params|
   puts "#{path}:"
   params.keys.each do |key|
-    if params[key].keys.size == 1
-      puts "  #{key}:#{params[key].keys.first}"
+    values = params[key].keys
+    if values.size == 1
+      if (value = values.first) != '-'
+        puts "  #{key}:#{value}"
+      end
     else
       if %w[time http_x_forwarded_for].include?(key)
         puts "  #{key}:[abbreviated]"
       else
-        puts "  #{key}:[#{params[key].keys.join(",")}]"
+        puts "  #{key}:[#{values.join(",")}]"
       end
     end
   end
