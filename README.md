@@ -71,11 +71,11 @@ sudo /etc/init.d/mysql restart
 ```
 
 
-ログをきれいにして、reload
+ログをきれいにして再起動 (reload じゃダメ)
 
 ```
 sudo mv /var/log/nginx/access.log /var/log/nginx/access.log.bak
-sudo /etc/init.d/nginx reload
+sudo /etc/init.d/nginx restart
 ```
 
 ```
