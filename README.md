@@ -20,6 +20,12 @@ slow_query_log_file = /var/lib/mysql/slow.log
 long_query_time = 0
 ```
 
+show create table の情報をだしておく
+
+```
+/home/isucon/env.sh ~/bin/show_create_tables.rb > ~/metrics/show_create_tables.txt
+```
+
 ### Nginx
 
 ログを仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/10.nginx.md
