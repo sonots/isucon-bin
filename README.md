@@ -139,19 +139,6 @@ $ cat ~/metrics/$DATE_tcpdump.log | ~/bin/tcpdump_all_headers.rb
                     'http_referer:$http_referer\t'
                     'http_user_agent:$http_user_agent\t'
                     'http_content_type:$http_content_type\t'
-                    'http_x_forwarded_for:$http_x_forwarded_for\t'
-                    'http_host:$http_host\t'
-                    'http_cookie:$http_cookie\t'
-                    'http_accept_encoding:$http_accept_encoding\t'
-                    'sent_http_connection:$sent_http_connection\t'
-                    'sent_http_date:$sent_http_date\t'
-                    'sent_http_content_length:$sent_http_content_length\t'
-                    'sent_http_last_modified:$sent_http_last_modified\t'
-                    'sent_http_x_frame_options:$sent_http_x_frame_options\t'
-                    'sent_http_content_type:$sent_http_content_type\t'
-                    'sent_http_x_xss_protection:$sent_http_x_xss_protection\t'
-                    'sent_http_server:$sent_http_server\t'
-                    'sent_http_location:$sent_http_location\t'
                     'sent_http_status:$sent_http_status\t'
                     'sent_http_x_content_type_options:$sent_http_x_content_type_options\t'
                     'sent_http_set_cookie:$sent_http_set_cookie';
@@ -164,9 +151,15 @@ sudo mv /var/log/nginx/access.log{,.bak}
 sudo /etc/init.d/nginx restart
 ```
 
-再計測して、ログを git push
+再計測して、
 
 ```
 DATE=$(date +%H%m)
 cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
+```
+
+ヘッダを含めた全エンドポイントの unique パラメータを一覧化
+
+```
+cat /var/log/nginx/access.log | ~/bin/http_unique_params.rb > ~/metrics/$DATE_http_unique_params.log
 ```
