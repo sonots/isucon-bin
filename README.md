@@ -66,7 +66,7 @@ bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/metrics/$DATE_app.log
 ログをきれいにして再起動
 
 ```
-sudo mv /var/lib/mysql/slow.log /var/lib/mysql/slow.log.bak
+sudo mv /var/lib/mysql/slow.log{,.bak}
 sudo /etc/init.d/mysql restart
 ```
 
@@ -74,7 +74,7 @@ sudo /etc/init.d/mysql restart
 ログをきれいにして再起動 (reload じゃダメ)
 
 ```
-sudo mv /var/log/nginx/access.log /var/log/nginx/access.log.bak
+sudo mv /var/log/nginx/access.log{,.bak}
 sudo /etc/init.d/nginx restart
 ```
 
@@ -160,7 +160,7 @@ $ cat ~/metrics/$DATE_tcpdump.log | ~/bin/tcpdump_all_headers.rb
 nginx のログを挿げ替えて
 
 ```
-sudo mv /var/log/nginx/access.log /var/log/nginx/access.log.bak
+sudo mv /var/log/nginx/access.log{,.bak}
 sudo /etc/init.d/nginx restart
 ```
 
