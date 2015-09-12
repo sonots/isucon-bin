@@ -163,3 +163,5 @@ cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
 ```
 cat /var/log/nginx/access.log | ~/bin/http_unique_params.rb > ~/metrics/$DATE_http_unique_params.log
 ```
+
+See https://github.com/sonots/isucon-bin/pull/1 for an example.
