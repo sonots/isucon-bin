@@ -124,7 +124,7 @@ cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
 ## 全ヘッダの取得
 
 ```
-$ cat ~/metrics/$DATE_tcpdump.log | ~/bin/tcpdump_all_headers.rb
+$ ~/bin/tcpdump_all_headers.rb ~/metrics/$DATE_tcpdump.log
   log_format  ltsv  'time:$time_iso8601\t'
                     'host:$remote_addr\t'
                     'port:$server_port\t'
@@ -161,7 +161,7 @@ cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
 ヘッダを含めた全エンドポイントの unique パラメータを一覧化
 
 ```
-cat /var/log/nginx/access.log | ~/bin/http_unique_params.rb > ~/metrics/$DATE_http_unique_params.log
+~/bin/http_unique_params.rb /var/log/nginx/access.log > ~/metrics/$DATE_http_unique_params.log
 ```
 
 See https://github.com/sonots/isucon-bin/pull/1 for an example.
