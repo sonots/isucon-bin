@@ -5,8 +5,8 @@
 ### Ruby アプリ
 
 * https://github.com/sonots/rack-ltsv_logger <= nginx でログを出すなら不要
-* https://github.com/sonots/sinatra-template_metrics
-* https://github.com/sonots/mysql2-metrics <= mysqldumpslow を使うなら不要
+* https://github.com/sonots/sinatra-template_log
+* https://github.com/sonots/mysql2-log <= mysqldumpslow を使うなら不要
 
 を仕込む。
 
@@ -23,7 +23,7 @@ long_query_time = 0
 show create table の情報をだしておく
 
 ```
-/home/isucon/env.sh ~/bin/show_create_tables.rb > ~/metrics/show_create_tables.txt
+/home/isucon/env.sh ~/bin/show_create_tables.rb > ~/log/show_create_tables.txt
 ```
 
 ### Nginx
@@ -60,7 +60,7 @@ DATE=$(date +%H%m)
 ```
 
 ```
-bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/metrics/$DATE_app.log
+bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/log/$DATE_app.log
 ```
 
 ログをきれいにして再起動
@@ -79,15 +79,15 @@ sudo /etc/init.d/nginx restart
 ```
 
 ```
-sudo tcpdump -A port 80 -i lo > ~/metrics/$DATE_tcpdump.log
+sudo tcpdump -A port 80 -i lo > ~/log/$DATE_tcpdump.log
 ```
 
 ```
-vmstat 1 | tee ~/metrics/$DATE_vmstat.log
+vmstat 1 | tee ~/log/$DATE_vmstat.log
 ```
 
 ```
-iostat -dkxt 1 | tee ~/metrics/$DATE_iostat.log
+iostat -dkxt 1 | tee ~/log/$DATE_iostat.log
 ```
 
 top を起動しておく。iftop を起動しておく。
@@ -99,24 +99,24 @@ time benchmarker で起動してベンチマーカーの時間も測りつつ、
 ### アプリ
 
 ```
-~/bin/http_stat.sh ~/metrics/$DATE_app.log | tee ~/metrics/$DATE_http_stat.log
-~/bin/template_stat.sh ~/metrics/$DATE_app.log | tee ~/metrics/$DATE_template_stat.log
-~/bin/query_stat.sh ~/metrics/$DATE_app.log | tee ~/metrics/$DATE_app_stat.log
+~/bin/http_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_http_stat.log
+~/bin/template_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_template_stat.log
+~/bin/query_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_app_stat.log
 ```
 
 ### MySQL
 
 ```
-cp /var/lib/mysql/slow.log ~/metrics/$DATE_slow.log
-mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/metrics/$DATE_mysqldumpslow.log
+cp /var/lib/mysql/slow.log ~/log/$DATE_slow.log
+mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/log/$DATE_mysqldumpslow.log
 ```
 
 
 ### Nginx
 
 ```
-cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
-~/bin/http_stat.sh /var/log/nginx/access.log | tee ~/metrics/$DATE_access_stat.log
+cp /var/log/nginx/access.log ~/log/$DATE_access.log
+~/bin/http_stat.sh /var/log/nginx/access.log | tee ~/log/$DATE_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
@@ -124,7 +124,7 @@ cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
 ## 全ヘッダの取得
 
 ```
-$ ~/bin/tcpdump_all_headers.rb ~/metrics/$DATE_tcpdump.log
+$ ~/bin/tcpdump_all_headers.rb ~/log/$DATE_tcpdump.log
   log_format  ltsv  'time:$time_iso8601\t'
                     'host:$remote_addr\t'
                     'port:$server_port\t'
@@ -135,13 +135,14 @@ $ ~/bin/tcpdump_all_headers.rb ~/metrics/$DATE_tcpdump.log
                     'size:$body_bytes_sent\t'
                     'apptime:$upstream_response_time\t'
                     'reqtime:$request_time\t'
-                    'http_content_length:$http_content_length\t'
-                    'http_referer:$http_referer\t'
-                    'http_user_agent:$http_user_agent\t'
-                    'http_content_type:$http_content_type\t'
-                    'sent_http_status:$sent_http_status\t'
-                    'sent_http_x_content_type_options:$sent_http_x_content_type_options\t'
-                    'sent_http_set_cookie:$sent_http_set_cookie';
+                    'HTTP-Cookie:$http_cookie\t'
+                    'HTTP-Referer:$http_referer\t'
+                    'HTTP-Content-Length:$http_content_length\t'
+                    'HTTP-Content-Type:$http_content_type\t'
+                    'SENT-HTTP-Server:$sent_http_server\t'
+                    'SENT-HTTP-Date:$sent_http_date\t'
+                    'SENT-HTTP-Content-Type:$sent_http_content_type\t'
+                    'SENT-HTTP-Connection:$sent_http_connection';
 ```
 
 nginx のログを挿げ替えて
@@ -155,13 +156,18 @@ sudo /etc/init.d/nginx restart
 
 ```
 DATE=$(date +%H%m)
-cp /var/log/nginx/access.log ~/metrics/$DATE_access.log
+cp /var/log/nginx/access.log ~/log/$DATE_access.log
 ```
 
-ヘッダを含めた全エンドポイントの unique パラメータを一覧化
+ヘッダを含めた全エンドポイントの unique パラメータを一覧化 cf. https://github.com/sonots/isucon-bin/pull/1
 
 ```
-~/bin/http_unique_params.rb /var/log/nginx/access.log > ~/metrics/$DATE_http_unique_params.log
+~/bin/http_unique_params.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_params.log
 ```
 
-See https://github.com/sonots/isucon-bin/pull/1 for an example.
+
+ヘッダを含めた全エンドポイントのリクエストパターンを解析 cf. https://github.com/sonots/isucon-bin/pull/2
+
+```
+~/bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_requests.log
+```
