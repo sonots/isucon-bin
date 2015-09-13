@@ -55,13 +55,13 @@ puts <<'EOF'
 EOF
 
 nginx_request_headers = request_headers.keys.map do |header|
-  header = header.downcase.gsub('-', '_')
-  %Q[                    'http_#{header}:$http_#{header}]
+  nginx_header = header.downcase.gsub('-', '_')
+  %Q[                    'HTTP-#{header}:$http_#{nginx_header}]
 end
 puts nginx_request_headers.join(%Q[\\t'\n]) << %Q[\\t'\n]
 
 nginx_response_headers = response_headers.keys.map do |header|
-  header = header.downcase.gsub('-', '_')
-  %Q[                    'sent_http_#{header}:$sent_http_#{header}]
+  nginx_header = header.downcase.gsub('-', '_')
+  %Q[                    'SENT-HTTP-#{header}:$sent_http_#{nginx_header}]
 end
 puts nginx_response_headers.join(%Q[\\t'\n]) << %Q[';]

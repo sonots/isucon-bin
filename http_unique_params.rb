@@ -26,11 +26,10 @@ stats.each do |path, params|
   params.keys.each do |key|
     values = params[key].keys
     if values.size == 1
-      if (value = values.first) != '-'
-        puts "  #{key}:#{value}"
-      end
+      value = values.first
+      puts "  #{key}:#{value}" unless value == '-'
     else
-      if %w[time http_x_forwarded_for].include?(key)
+      if %w[time HTTP-X-Forwarded-For].include?(key)
         puts "  #{key}:[abbreviated]"
       else
         puts "  #{key}:[#{values.join(",")}]"
