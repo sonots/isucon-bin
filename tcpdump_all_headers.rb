@@ -6,8 +6,14 @@ request_headers = {}
 response_headers = {}
 request = nil
 response = nil
+
+if ARGV.size > 0
+  fp = open(ARGV.first)
+else
+  fp = STDIN
+end
  
-STDIN.readlines.each do |line|
+fp.readlines.each do |line|
   if md = line.match(%r{(GET|POST|PUT|DELETE|PATCH).*HTTP/1.1.*})
     request_started = true
     request = md[0].chomp
@@ -33,6 +39,7 @@ STDIN.readlines.each do |line|
     response_headers[header.chomp] = 1
   end
 end
+fp.close rescue nil
 
 puts <<'EOF'
   log_format  ltsv  'time:$time_iso8601\t'

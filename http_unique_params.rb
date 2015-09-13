@@ -1,8 +1,14 @@
 #!/usr/bin/env ruby
-
 require 'uri'
+
+if ARGV.size > 0
+  fp = open(ARGV.first)
+else
+  fp = STDIN
+end
+
 stats = {}
-STDIN.readlines.each do |line|
+fp.readlines.each do |line|
   params = line.chomp.split("\t").map {|arg| arg.split(':', 2) }.to_h
   path, query = params['uri'].split('?')
   params['query'] = query if query and !query.empty?
@@ -13,6 +19,7 @@ STDIN.readlines.each do |line|
     stats[path][key][val] = true
   end
 end
+fp.close rescue nil
 
 stats.each do |path, params|
   puts "#{path}:"
