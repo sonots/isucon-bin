@@ -27,12 +27,12 @@ stats.each do |path, params|
     values = params[key].keys
     if values.size == 1
       value = values.first
-      puts "  #{key}:#{value}" unless value == '-'
+      puts "  #{key}: #{value}" unless value == '-'
     else
       if %w[time].include?(key)
-        puts "  #{key}:[abbreviated]"
+        puts "  #{key}: [abbreviated]"
       else
-        puts "  #{key}:[#{values.join(",")}]"
+        puts "  #{key}: [#{values.join(",")}]"
       end
     end
   end
