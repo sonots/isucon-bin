@@ -11,6 +11,9 @@ stats = {}
 fp.readlines.each do |line|
   params = line.chomp.split("\t").map {|arg| arg.split(':', 2) }.to_h
   path, query = params['uri'].split('?')
+
+  # params['uri'].gsub!(%r{foo/.*}, 'foo/xxxx')
+
   params['query'] = query if query and !query.empty?
   params.each do |key, val|
     stats[path] ||= {}
