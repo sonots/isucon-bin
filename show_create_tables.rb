@@ -7,23 +7,23 @@
 # export ISU4_DB_NAME=isu4_qualifier
 
 def db_user
-  ENV['DB_USER'] || ENV['ISU5_DB_USER'] || ENV['ISU4_DB_USER']
+  ENV['DB_USER'] || ENV['ISU5_DB_USER'] || ENV['ISU4_DB_USER'] || 'root'
 end
 
 def db_password
-  ENV['DB_PASSWORD'] || ENV['ISU5_DB_PASSWORD'] || ENV['ISU4_DB_PASSWORD']
+  ENV['DB_PASSWORD'] || ENV['ISU5_DB_PASSWORD'] || ENV['ISU4_DB_PASSWORD'] || ''
 end
 
 def db_host
-  ENV['DB_HOST'] || ENV['ISU5_DB_HOST'] || ENV['ISU4_DB_HOST']
+  ENV['DB_HOST'] || ENV['ISU5_DB_HOST'] || ENV['ISU4_DB_HOST'] || 'localhost'
 end
 
 def db_name
-  ENV['DB_NAME'] || ENV['ISU5_DB_NAME'] || ENV['ISU4_DB_NAME']
+  ENV['DB_NAME'] || ENV['ISU5_DB_NAME'] || ENV['ISU4_DB_NAME'] || 'isucon5q'
 end
 
 def mysql
-  "mysql -u#{db_user} -p#{db_password} -h #{db_host} #{db_name}"
+  "mysql -u#{db_user} -h #{db_host} #{db_name}"
 end
 
 tables = `#{mysql} -B -N -e 'show tables' | egrep -v 'schema_migrations|repli_chk|repli_clock'`.split("\n")
@@ -37,3 +37,5 @@ tables.each do |table|
   $stdout.puts "> #{cmd}"
   $stdout.puts `#{mysql} -B -N -e '#{cmd}'`
 end
+puts '$ sudo du -h /var/lib/mysql/'
+puts `sudo du -h /var/lib/mysql/`
