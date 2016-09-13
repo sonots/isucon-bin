@@ -1,41 +1,83 @@
 #!/usr/bin/env ruby
+# ruby show_create_tables.rb -u USER -p PASSWORD -h HOST -P port DB > ~/log/show_create_tables.txt
 
-# export ISU4_DB_HOST=localhost
-# export ISU4_DB_PORT=3306
-# export ISU4_DB_USER=isucon
-# export ISU4_DB_PASSWORD=isucon
-# export ISU4_DB_NAME=isu4_qualifier
+require 'optparse'
 
-def db_user
-  ENV['DB_USER'] || ENV['ISU5_DB_USER'] || ENV['ISU4_DB_USER'] || 'root'
+class ShowCreateTable
+  class CLI
+    def parse_options(argv = ARGV)
+      op = OptionParser.new
+
+      self.class.module_eval do
+        define_method(:usage) do |msg = nil|
+          puts op.to_s
+          puts "error: #{msg}" if msg
+          exit 1
+        end
+      end
+
+      opts = {
+        user: 'isucon',
+        password: 'isucon',
+        host: 'localhost',
+        port: '3306',
+      }
+
+      op.on('-u', '--user VALUE', "username (default: #{opts[:user]})") {|v|
+        opts[:user] = v
+      }
+      op.on('-p', '--password VALUE', "password (default: #{opts[:password]})") {|v|
+        opts[:password] = v
+      }
+      op.on('-h', '--host VALUE', "host (default: #{opts[:host]})") {|v|
+        opts[:host] = v
+      }
+      op.on('-P', '--port VALUE', "port (default: #{opts[:port]})") {|v|
+        opts[:port] = v
+      }
+
+      op.banner += ' DB'
+      begin
+        args = op.parse(argv)
+      rescue OptionParser::InvalidOption => e
+        usage e.message
+      end
+
+      if args.size < 1
+        usage 'number of arguments is less than 1'
+      end
+
+      @user = opts[:user]
+      @password = opts[:password]
+      @db = args[0]
+      @host = opts[:host]
+      @port = opts[:port]
+    end
+
+    def run
+      parse_options
+
+      tables = `#{mysql} -B -N -e 'show tables' | egrep -v 'schema_migrations|repli_chk|repli_clock'`.split("\n")
+      tables.each do |table|
+        cmd = "show create table #{table}"
+        $stdout.puts "> #{cmd}"
+        $stdout.puts `#{mysql} -B -N -e '#{cmd}'`.split("\t")[1].split("\\n").join("\n")
+      end
+      tables.each do |table|
+        cmd = "select count(1) from #{table}"
+        $stdout.puts "> #{cmd}"
+        $stdout.puts `#{mysql} -B -N -e '#{cmd}'`
+      end
+      puts "$ sudo ls -lh /var/lib/mysql/#{@db}"
+      puts `sudo ls -lh /var/lib/mysql/#{@db}`
+    end
+
+    private
+
+    def mysql
+      "mysql -u#{@user} -p#{@password} -h #{@host} -P #{@port} #{@db}"
+    end
+  end
 end
 
-def db_password
-  ENV['DB_PASSWORD'] || ENV['ISU5_DB_PASSWORD'] || ENV['ISU4_DB_PASSWORD'] || ''
-end
-
-def db_host
-  ENV['DB_HOST'] || ENV['ISU5_DB_HOST'] || ENV['ISU4_DB_HOST'] || 'localhost'
-end
-
-def db_name
-  ENV['DB_NAME'] || ENV['ISU5_DB_NAME'] || ENV['ISU4_DB_NAME'] || 'isucon5q'
-end
-
-def mysql
-  "mysql -u#{db_user} -h #{db_host} #{db_name}"
-end
-
-tables = `#{mysql} -B -N -e 'show tables' | egrep -v 'schema_migrations|repli_chk|repli_clock'`.split("\n")
-tables.each do |table|
-  cmd = "show create table #{table}"
-  $stdout.puts "> #{cmd}"
-  $stdout.puts `#{mysql} -B -N -e '#{cmd}'`.split("\t")[1].split("\\n").join("\n")
-end
-tables.each do |table|
-  cmd = "select count(1) from #{table}"
-  $stdout.puts "> #{cmd}"
-  $stdout.puts `#{mysql} -B -N -e '#{cmd}'`
-end
-puts '$ sudo du -h /var/lib/mysql/'
-puts `sudo du -h /var/lib/mysql/`
+ShowCreateTable::CLI.new.run

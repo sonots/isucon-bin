@@ -23,7 +23,7 @@ long_query_time = 0
 show create table の情報をだしておく
 
 ```
-/home/isucon/env.sh ~/bin/show_create_tables.rb > ~/log/show_create_tables.txt
+~/isucon-bin/show_create_tables.rb -u USER -p PASSWORD -h HOST -P port DB > ~/log/show_create_tables.txt
 ```
 
 ### Nginx
@@ -99,9 +99,9 @@ time benchmarker で起動してベンチマーカーの時間も測りつつ、
 ### アプリ
 
 ```
-~/bin/http_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_http_stat.log
-~/bin/template_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_template_stat.log
-~/bin/query_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_app_stat.log
+~/isucon-bin/http_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_http_stat.log
+~/isucon-bin/template_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_template_stat.log
+~/isucon-bin/query_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_app_stat.log
 ```
 
 ### MySQL
@@ -116,7 +116,7 @@ mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/log/$DATE_mysqldumpslow.log
 
 ```
 cp /var/log/nginx/access.log ~/log/$DATE_access.log
-~/bin/http_stat.sh /var/log/nginx/access.log | tee ~/log/$DATE_access_stat.log
+~/isucon-bin/http_stat.sh /var/log/nginx/access.log | tee ~/log/$DATE_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
@@ -124,7 +124,7 @@ cp /var/log/nginx/access.log ~/log/$DATE_access.log
 ## 全ヘッダの取得
 
 ```
-$ ~/bin/tcpdump_all_headers.rb ~/log/$DATE_tcpdump.log
+$ ~/isucon-bin/tcpdump_all_headers.rb ~/log/$DATE_tcpdump.log
   log_format  ltsv  'time:$time_iso8601\t'
                     'host:$remote_addr\t'
                     'port:$server_port\t'
@@ -162,12 +162,12 @@ cp /var/log/nginx/access.log ~/log/$DATE_access.log
 ヘッダを含めた全エンドポイントの unique パラメータを一覧化 cf. https://github.com/sonots/isucon-bin/pull/1
 
 ```
-~/bin/http_unique_params.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_params.log
+~/isucon-bin/http_unique_params.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_params.log
 ```
 
 
 ヘッダを含めた全エンドポイントのリクエストパターンを解析 cf. https://github.com/sonots/isucon-bin/pull/2
 
 ```
-~/bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_requests.log
+~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_requests.log
 ```
