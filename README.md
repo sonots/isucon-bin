@@ -15,9 +15,10 @@
 slow query log を出すように仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/06.mysql_5.6.md
 
 ```
-slow_query_log = 1
+slow_query_log = ON
 slow_query_log_file = /var/lib/mysql/slow.log
 long_query_time = 0
+# log-queries-not-using-indexes # show queries not using index
 ```
 
 show create table の情報をだしておく
