@@ -5,8 +5,8 @@
 ### Ruby アプリ
 
 * https://github.com/sonots/rack-ltsv_logger <= nginx でログを出すなら不要
-* https://github.com/sonots/sinatra-template_log
-* https://github.com/sonots/mysql2-log <= mysqldumpslow を使うなら不要
+* https://github.com/sonots/sinatra-template_metrics
+* https://github.com/sonots/mysql2-metrics <= mysqldumpslow を使うなら不要
 
 を仕込む。
 
