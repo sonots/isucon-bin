@@ -63,19 +63,10 @@ DATE=$(date +%H%m)
 bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/log/$DATE_app.log
 ```
 
-ログをきれいにして再起動
+mysql, nginx のログをきれいにして再起動
 
 ```
-sudo mv /var/lib/mysql/slow.log{,.bak}
-sudo /etc/init.d/mysql restart
-```
-
-
-ログをきれいにして再起動 (reload じゃダメ)
-
-```
-sudo mv /var/log/nginx/access.log{,.bak}
-sudo /etc/init.d/nginx restart
+sudo ~/isucon-bin/prepare.sh
 ```
 
 ```
@@ -108,7 +99,7 @@ time benchmarker で起動してベンチマーカーの時間も測りつつ、
 
 ```
 cp /var/lib/mysql/slow.log ~/log/$DATE_slow.log
-mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/log/$DATE_mysqldumpslow.log
+mysqldumpslow -s t ~/log/$DATE_slow.log | tee ~/log/$DATE_mysqldumpslow.log
 ```
 
 
@@ -116,7 +107,7 @@ mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/log/$DATE_mysqldumpslow.log
 
 ```
 cp /var/log/nginx/access.log ~/log/$DATE_access.log
-~/isucon-bin/http_stat.sh /var/log/nginx/access.log | tee ~/log/$DATE_access_stat.log
+~/isucon-bin/alp -f ~/log/$DATE_access.log --sum -r --aggregates "/image/\d+,/@.+,/posts\?.+,/posts/.*" | tee ~/log/$DATE_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
