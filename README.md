@@ -60,7 +60,7 @@ DATE=$(date +%H%m)
 ```
 
 ```
-bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/log/$DATE_app.log
+bundle exec unicorn -c unicorn_config.rb -p 8080 | tee ~/log/${DATE}_app.log
 ```
 
 mysql, nginx のログをきれいにして再起動
@@ -70,15 +70,15 @@ sudo ~/isucon-bin/prepare.sh
 ```
 
 ```
-sudo tcpdump -A port 80 -i lo > ~/log/$DATE_tcpdump.log
+sudo tcpdump -A port 80 -i lo > ~/log/${DATE}_tcpdump.log
 ```
 
 ```
-vmstat 1 | tee ~/log/$DATE_vmstat.log
+vmstat 1 | tee ~/log/${DATE}_vmstat.log
 ```
 
 ```
-iostat -dkxt 1 | tee ~/log/$DATE_iostat.log
+iostat -dkxt 1 | tee ~/log/${DATE}_iostat.log
 ```
 
 top を起動しておく。iftop を起動しておく。
@@ -90,24 +90,24 @@ time benchmarker で起動してベンチマーカーの時間も測りつつ、
 ### アプリ
 
 ```
-~/isucon-bin/http_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_http_stat.log
-~/isucon-bin/template_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_template_stat.log
-~/isucon-bin/query_stat.sh ~/log/$DATE_app.log | tee ~/log/$DATE_app_stat.log
+~/isucon-bin/http_stat.sh ~/log/${DATE}_app.log | tee ~/log/${DATE}_http_stat.log
+~/isucon-bin/template_stat.sh ~/log/${DATE}_app.log | tee ~/log/${DATE}_template_stat.log
+~/isucon-bin/query_stat.sh ~/log/${DATE}_app.log | tee ~/log/${DATE}_app_stat.log
 ```
 
 ### MySQL
 
 ```
-cp /var/lib/mysql/slow.log ~/log/$DATE_slow.log
-mysqldumpslow -s t ~/log/$DATE_slow.log | tee ~/log/$DATE_mysqldumpslow.log
+cp /var/lib/mysql/slow.log ~/log/${DATE}_slow.log
+mysqldumpslow -s t ~/log/${DATE}_slow.log | tee ~/log/${DATE}_mysqldumpslow.log
 ```
 
 
 ### Nginx
 
 ```
-cp /var/log/nginx/access.log ~/log/$DATE_access.log
-~/isucon-bin/alp -f ~/log/$DATE_access.log --sum -r --aggregates "/image/\d+,/@.+,/posts\?.+,/posts/.*" | tee ~/log/$DATE_access_stat.log
+cp /var/log/nginx/access.log ~/log/${DATE}_access.log
+~/isucon-bin/alp -f ~/log/${DATE}_access.log --sum -r --aggregates "/image/\d+,/@.+,/posts\?.+,/posts/.*" | tee ~/log/${DATE}_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
@@ -115,7 +115,7 @@ cp /var/log/nginx/access.log ~/log/$DATE_access.log
 ## 全ヘッダの取得
 
 ```
-$ ~/isucon-bin/tcpdump_all_headers.rb ~/log/$DATE_tcpdump.log
+$ ~/isucon-bin/tcpdump_all_headers.rb ~/log/${DATE}_tcpdump.log
   log_format  ltsv  'time:$time_iso8601\t'
                     'host:$remote_addr\t'
                     'port:$server_port\t'
@@ -147,18 +147,18 @@ sudo /etc/init.d/nginx restart
 
 ```
 DATE=$(date +%H%m)
-cp /var/log/nginx/access.log ~/log/$DATE_access.log
+cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 ```
 
 ヘッダを含めた全エンドポイントの unique パラメータを一覧化 cf. https://github.com/sonots/isucon-bin/pull/1
 
 ```
-~/isucon-bin/http_unique_params.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_params.log
+~/isucon-bin/http_unique_params.rb /var/log/nginx/access.log > ~/log/${DATE}_http_unique_params.log
 ```
 
 
 ヘッダを含めた全エンドポイントのリクエストパターンを解析 cf. https://github.com/sonots/isucon-bin/pull/2
 
 ```
-~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/$DATE_http_unique_requests.log
+~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/${DATE}_http_unique_requests.log
 ```
