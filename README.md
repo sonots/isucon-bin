@@ -168,3 +168,17 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 ```
 ~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/${DATE}_http_unique_requests.log
 ```
+
+## http traffic replay ツール gor
+
+記録して
+
+```
+sudo ~/isucon-bin/gor --input-raw :80 --output-file ~/log/requests.gor
+```
+
+再生
+
+```
+sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://localhost:80"
+``
