@@ -10,6 +10,11 @@
 
 を仕込む。
 
+アプリレベルのチューニングが必要になったら
+
+* https://github.com/kainosnoema/rack-lineprof
+* https://github.com/tmm1/stackprof
+
 ### Mysql
 
 slow query log を出すように仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/06.mysql_5.6.md
