@@ -71,7 +71,8 @@ sudo ~/isucon-bin/prepare.sh
 ```
 
 ```
-sudo tcpdump -A port 80 -i lo > ~/log/${DATE}_tcpdump.log
+# sudo tcpdump -A port 80 -i lo > ~/log/${DATE}_tcpdump.log
+sudo tcpdump -A port 80 > ~/log/${DATE}_tcpdump.log
 ```
 
 ```
@@ -115,8 +116,14 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 
 ## 全ヘッダの取得
 
-```
 $ ~/isucon-bin/tcpdump_all_headers.rb ~/log/${DATE}_tcpdump.log
+
+## エンドポイント別ヘッダの取得
+
+ToDo: nginx のアクセスログ形式を変えて再度ベンチ走らせるので手間...
+
+```
+$ ~/isucon-bin/tcpdump_nginx_headers.rb ~/log/${DATE}_tcpdump.log
   log_format  ltsv  'time:$time_iso8601\t'
                     'host:$remote_addr\t'
                     'port:$server_port\t'
