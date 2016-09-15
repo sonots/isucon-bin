@@ -45,26 +45,34 @@ end
 fp.close rescue nil
 
 puts <<'EOF'
-  log_format  ltsv  'time:$time_iso8601\t'
-                    'host:$remote_addr\t'
-                    'port:$server_port\t'
-                    'method:$request_method\t'
-                    'uri:$request_uri\t'
-                    'protocol:$server_protocol\t'
-                    'status:$status\t'
-                    'size:$body_bytes_sent\t'
-                    'apptime:$upstream_response_time\t'
-                    'reqtime:$request_time\t'
+  log_format  ltsv  'time:$time_iso8601'
+                    '\thost:$remote_addr'
+                    '\tforwardedfor:$http_x_forwarded_for'
+                    '\treq:$request'
+                    '\tstatus:$status'
+                    '\tmethod:$request_method'
+                    '\turi:$request_uri'
+                    '\tsize:$body_bytes_sent'
+                    '\treferer:$http_referer'
+                    '\tua:$http_user_agent'
+                    '\treqtime:$request_time'
+                    "\tcache:$upstream_http_x_cache"
+                    "\truntime:$upstream_http_x_runtime"
+                    '\tapptime:$upstream_response_time'
+                    '\tport:$server_port'
+                    '\tprotocol:$server_protocol'
+                    '\tforwardedproto:$http_x_forwarded_proto'
+                    '\tvhost:$http_host'
 EOF
 
 nginx_request_headers = request_headers.keys.map do |header|
   nginx_header = header.downcase.gsub('-', '_')
-  %Q[                    'HTTP-#{header}:$http_#{nginx_header}]
+  %Q[                    '\\tHTTP-#{header}:$http_#{nginx_header}']
 end
-puts nginx_request_headers.join(%Q[\\t'\n]) << %Q[\\t'\n]
+puts nginx_request_headers.join(%Q[\n]) << %Q[\n]
 
 nginx_response_headers = response_headers.keys.map do |header|
   nginx_header = header.downcase.gsub('-', '_')
-  %Q[                    'SENT-HTTP-#{header}:$sent_http_#{nginx_header}]
+  %Q[                    '\\tSENT-HTTP-#{header}:$sent_http_#{nginx_header}']
 end
-puts nginx_response_headers.join(%Q[\\t'\n]) << %Q[';]
+puts nginx_response_headers.join(%Q[\n]) << %Q[;]
