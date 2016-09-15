@@ -22,7 +22,7 @@ long_query_time = 0
 ```
 
 show create table の情報をだしておく
-
+al
 ```
 ~/isucon-bin/show_create_tables.rb -u USER -p PASSWORD -h HOST -P port DB > ~/log/show_create_tables.txt
 ```
@@ -116,6 +116,8 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
+
+https://github.com/tkuchiki/alp
 
 ## 全ヘッダの取得
 
