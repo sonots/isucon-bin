@@ -5,8 +5,8 @@
 ### Ruby アプリ
 
 * https://github.com/sonots/rack-ltsv_logger <= nginx でログを出すなら不要
-* https://github.com/sonots/sinatra-template_log
-* https://github.com/sonots/mysql2-log <= mysqldumpslow を使うなら不要
+* https://github.com/sonots/sinatra-template_metrics
+* https://github.com/sonots/mysql2-metrics <= mysqldumpslow を使うなら不要
 
 を仕込む。
 
@@ -15,9 +15,10 @@
 slow query log を出すように仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/06.mysql_5.6.md
 
 ```
-slow_query_log = 1
+slow_query_log = ON
 slow_query_log_file = /var/lib/mysql/slow.log
 long_query_time = 0
+# log-queries-not-using-indexes # show queries not using index
 ```
 
 show create table の情報をだしておく
@@ -161,4 +162,43 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 
 ```
 ~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/${DATE}_http_unique_requests.log
+```
+
+## http traffic replay ツール gor
+
+記録して
+
+```
+sudo ~/isucon-bin/gor --input-raw :80 --output-file ~/log/requests.gor
+```
+
+再生
+
+```
+sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://localhost:80"
+```
+
+## アプリレベルのチューニング
+
+https://github.com/kainosnoema/rack-lineprof
+
+config.ru
+
+```ruby
+require_relative './app.rb'
+require 'rack-lineprof'
+
+use Rack::Lineprof, profile: /app/
+run Isuconp::App
+```
+
+https://github.com/tmm1/stackprof
+
+config.rb
+
+```ruby
+use StackProf::Middleware, enabled: true,
+                           mode: :cpu,
+                           interval: 1000,
+                           save_every: 5
 ```
