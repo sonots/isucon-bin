@@ -10,11 +10,6 @@
 
 を仕込む。
 
-アプリレベルのチューニングが必要になったら
-
-* https://github.com/kainosnoema/rack-lineprof
-* https://github.com/tmm1/stackprof
-
 ### Mysql
 
 slow query log を出すように仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/06.mysql_5.6.md
@@ -181,4 +176,29 @@ sudo ~/isucon-bin/gor --input-raw :80 --output-file ~/log/requests.gor
 
 ```
 sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://localhost:80"
+```
+
+## アプリレベルのチューニング
+
+https://github.com/kainosnoema/rack-lineprof
+
+config.ru
+
+```ruby
+require_relative './app.rb'
+require 'rack-lineprof'
+
+use Rack::Lineprof, profile: /app/
+run Isuconp::App
+```
+
+https://github.com/tmm1/stackprof
+
+config.rb
+
+```ruby
+use StackProf::Middleware, enabled: true,
+                           mode: :cpu,
+                           interval: 1000,
+                           save_every: 5
 ```
