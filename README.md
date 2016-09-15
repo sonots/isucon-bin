@@ -32,7 +32,7 @@ show create table の情報をだしておく
 ログを仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/10.nginx.md
 
 ```
-  log_format  ltsv  'time:$time_local'
+  log_format  ltsv  'time:$time_iso8601'
                     '\thost:$remote_addr'
                     '\tforwardedfor:$http_x_forwarded_for'
                     '\treq:$request'
