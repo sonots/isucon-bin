@@ -1,6 +1,8 @@
 # 画面を触る
 
-まず最初に rack-lineprof を仕込んでアプリを触って画面、仕様確認すると良い https://github.com/kainosnoema/rack-lineprof
+https://github.com/kainosnoema/rack-lineprof
+
+まず最初に rack-lineprof を仕込んでアプリを触って画面、仕様確認すると良い
 
 config.ru
 
@@ -133,6 +135,15 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 
 https://github.com/tkuchiki/alp
 
+# ヘッダの確認
+
+tcpdump したデータから取り出す。ヘッダには出題者からのヒントが書かれている。
+
+```
+# sudo tcpdump -A port 80 -i lo > ~/log/${DATE}_tcpdump.log
+sudo tcpdump -A port 80 > ~/log/${DATE}_tcpdump.log
+```
+
 ## 全ヘッダの取得
 
 $ ~/isucon-bin/tcpdump_all_headers.rb ~/log/${DATE}_tcpdump.log
@@ -215,7 +226,7 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 ~/isucon-bin/http_unique_requests.rb /var/log/nginx/access.log > ~/log/${DATE}_http_unique_requests.log
 ```
 
-## http traffic replay ツール gor
+# http traffic replay ツール gor
 
 記録して
 
@@ -229,7 +240,7 @@ sudo ~/isucon-bin/gor --input-raw :80 --output-file ~/log/requests.gor
 sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://localhost:80"
 ```
 
-## アプリレベルでのプロファイリング
+# アプリレベルでのプロファイリング
 
 ベンチ回して統計取りたい場合は stackprof https://github.com/tmm1/stackprof
 
