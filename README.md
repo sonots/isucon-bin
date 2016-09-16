@@ -1,3 +1,17 @@
+# 画面を触る
+
+まず最初に rack-lineprof を仕込んでアプリを触って画面、仕様確認すると良い https://github.com/kainosnoema/rack-lineprof
+
+config.ru
+
+```ruby
+require_relative './app.rb'
+require 'rack-lineprof'
+
+use Rack::Lineprof, profile: /app/
+run Isuconp::App
+```
+
 # メトリクス取得
 
 ## 仕込み
@@ -215,21 +229,9 @@ sudo ~/isucon-bin/gor --input-raw :80 --output-file ~/log/requests.gor
 sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://localhost:80"
 ```
 
-## アプリレベルのチューニング
+## アプリレベルでのプロファイリング
 
-https://github.com/kainosnoema/rack-lineprof
-
-config.ru
-
-```ruby
-require_relative './app.rb'
-require 'rack-lineprof'
-
-use Rack::Lineprof, profile: /app/
-run Isuconp::App
-```
-
-https://github.com/tmm1/stackprof
+ベンチ回して統計取りたい場合は stackprof https://github.com/tmm1/stackprof
 
 config.rb
 
