@@ -228,6 +228,8 @@ cp /var/log/nginx/access.log ~/log/${DATE}_access.log
 
 # http traffic replay ツール gor
 
+https://github.com/buger/gor
+
 記録して
 
 ```
