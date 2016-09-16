@@ -244,7 +244,9 @@ sudo ~/isucon-bin/gor --input-file ~/log/requests.gor --output-http "http://loca
 
 # アプリレベルでのプロファイリング
 
-ベンチ回して統計取りたい場合は stackprof https://github.com/tmm1/stackprof
+https://github.com/tmm1/stackprof
+
+ベンチ回して統計取りたい場合は stackprof
 
 config.rb
 
