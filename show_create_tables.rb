@@ -17,8 +17,8 @@ class ShowCreateTable
       end
 
       opts = {
-        user: 'isucon',
-        password: 'isucon',
+        user: 'root',
+        password: '',
         host: 'localhost',
         port: '3306',
       }
@@ -75,7 +75,7 @@ class ShowCreateTable
     private
 
     def mysql
-      "mysql -u#{@user} -p#{@password} -h #{@host} -P #{@port} #{@db}"
+      "mysql -u#{@user}#{@password.empty? ? "" : " -p#{@password}"} -h #{@host} -P #{@port} #{@db}"
     end
   end
 end
