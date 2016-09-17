@@ -31,6 +31,8 @@ run Isuconp::App
 slow query log を出すように仕込む. cf. https://github.com/sonots/isucon5_cheatsheet/blob/master/06.mysql_5.6.md
 
 ```
+log_timestamps = SYSTEM # requirement for mysql7 to use mysqldumpslow
+
 slow_query_log = ON
 slow_query_log_file = /var/lib/mysql/slow.log
 long_query_time = 0
