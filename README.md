@@ -122,7 +122,7 @@ time benchmarker で起動してベンチマーカーの時間も測りつつ、
 
 ```
 cp /var/lib/mysql/slow.log ~/log/${DATE}_slow.log
-mysqldumpslow -s t ~/log/${DATE}_slow.log | tee ~/log/${DATE}_mysqldumpslow.log
+mysqldumpslow -s t /var/lib/mysql/slow.log | tee ~/log/${DATE}_mysqldumpslow.log
 ```
 
 
@@ -130,7 +130,7 @@ mysqldumpslow -s t ~/log/${DATE}_slow.log | tee ~/log/${DATE}_mysqldumpslow.log
 
 ```
 cp /var/log/nginx/access.log ~/log/${DATE}_access.log
-~/isucon-bin/alp -f ~/log/${DATE}_access.log --sum -r --aggregates "/image/\d+,/@.+,/posts\?.+,/posts/.*" --start-time "11:47:26" | tee ~/log/${DATE}_access_stat.log
+~/isucon-bin/alp -f /var/log/nginx/access.log --sum -r --aggregates "/image/\d+,/@.+,/posts\?.+,/posts/.*" --start-time "11:47:26" | tee ~/log/${DATE}_access_stat.log
 ```
 
 全部 git push してシェア。 (サンプル実行結果 https://gist.github.com/sonots/0a6211ea5bb5fc1f795c)
